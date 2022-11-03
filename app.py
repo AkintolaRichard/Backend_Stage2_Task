@@ -1,25 +1,28 @@
 from flask import Flask, request, abort, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r'/api/*': {'origins': '*'}})
 
     @app.after_request
     def after_request(response):
         response.headers.add(
             'Access-Control-Allow-Headers',
-            'Content-Type,true'
+            'Content-Type,Authorization,true'
         )
         response.headers.add(
+            'Access-Control-Allow-Methods',
             'GET,POST,DELETE,OPTIONS'
         )
         return response
 
-    @app.route('/', methods=['POST'])
+
+    @app.route('/api/v1.0/calculate', methods=['POST'])
+    @cross_origin()
     def retrieve_calculation():
         body = request.get_json()
 
