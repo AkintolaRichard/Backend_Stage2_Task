@@ -20,10 +20,10 @@ def create_app(test_config=None):
         )
         return response
 
-    @app.route('/api/v1.0/calculate', methods=['POST'])
+    @app.route('/', methods=['POST'])
     def retrieve_calculation():
         body = request.get_json()
-        print
+
         operation_type = body.get('operation_type', None)
         firstInt = body.get('x', None)
         secondInt = body.get('y', None)
