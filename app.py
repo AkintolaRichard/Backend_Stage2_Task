@@ -11,7 +11,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
-openai.api_key = os.environ.get("API_KEY")
+openai.api_key = os.getenv('API_KEY')
 
 @app.route('/')
 def index():
