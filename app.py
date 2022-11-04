@@ -1,96 +1,103 @@
+import os
+import openai
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 
+app = Flask(__name__)
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
-    @app.after_request
-    def after_request(response):
-        response.headers.add(
-            'Access-Control-Allow-Headers',
-            'Content-Type,true'
-        )
-        response.headers.add(
-            'GET,POST,DELETE,OPTIONS'
-        )
-        return response
+openai.api_key = os.environ.get("API_KEY")
 
-    @app.route('/', methods=['POST'])
-    def retrieve_calculation():
-        body = request.get_json()
+@app.route('/')
+def index():
+    return jsonify({
+        'success': True,
+        'message': 'Welcome to HNG 9 Stage 2 Task'
+    })
 
-        operation_type = body.get('operation_type', None)
+@app.route('/api/v1.0/calculate', methods=['POST'])
+def get_simple_calculation():
+    body = request.get_json()
+
+    result = None
+    operation_type = None
+    body_data_operation = body.get("operation_type", None)
+
+    if body_data_operation != None:
+        body_data_operation = body_data_operation.lower()
+    
+    if body_data_operation in operation_types:
+        operation_type = body_data_operation
+
         firstInt = body.get('x', None)
         secondInt = body.get('y', None)
+        if firstInt != None and secondInt != None:
+            result = eval(f'{firstInt}{operation_types[operation_type]}{secondInt}')
 
-        result = 0
-        try:
-            if operation_type != None and firstInt != None and secondInt != None:
-                operation_type = operation_type.lower()
-                if (operation_type == "addition" or operation_type == "subtraction" or operation_type == "multiplication"):
-                    if (str(type(firstInt)) != "<class 'int'>" and str(type(secondInt)) != "<class 'int'>"):
-                        if operation_type == "addition":
-                            result = firstInt + secondInt
-                        elif operation_type == "subtraction":
-                            result = firstInt - secondInt
-                        elif operation_type == "multiplication":
-                            result = firstInt * secondInt
-                    else:
-                        abort(400)
-                else:
-                    abort(400)
-            else:
-                abort(400)
-        except Exception as e:
-            abort(400)
-        
-        return jsonify({
-            'slackUsername': 'laolu',
-            'result': result,
-        })
-    
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({
-            "success": False,
-            "error": 404,
-            "message": "Not found"
-            }), 404
+    else:
+        response = openai.Completion.create(
+            model="text-davinci-002",
+            prompt=f"{body_data_operation} \n\n| solution | operation_type |",
+            temperature=0,
+            max_tokens=100,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
 
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return jsonify({
-            'success': False,
-            'error': 422,
-            'message': 'unprocessable'
-        }), 422
+        _, result, operation_type, _ = [
+            x.strip() for x in response.choices[0].text.split("\n")[-1].split("|")
+            ]
 
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({
-            'success': False,
-            'error': 400,
-            'message': 'Bad Request'
-        }), 400
+    return jsonify({
+        'slackUserName': 'laolu',
+        'result': int(result),
+        'operation_type': operation_type
+    })
 
-    @app.errorhandler(405)
-    def not_allowed(error):
-        return jsonify({
-            'success': False,
-            'error': 405,
-            'message': 'method not allowed'
-        }), 405
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "Not found"
+        }), 404
 
-    @app.errorhandler(500)
-    def not_successful(error):
-        return jsonify({
-            'success': False,
-            'error': 500,
-            'message': 'Request Not Successful'
-        }), 500
+@app.errorhandler(422)
+def unprocessable(error):
+    return jsonify({
+        'success': False,
+        'error': 422,
+        'message': 'unprocessable'
+    }), 422
 
-    return app
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({
+        'success': False,
+        'error': 400,
+        'message': 'Bad Request'
+    }), 400
+
+@app.errorhandler(405)
+def not_allowed(error):
+    return jsonify({
+        'success': False,
+        'error': 405,
+        'message': 'method not allowed'
+    }), 405
+
+@app.errorhandler(500)
+def not_successful(error):
+    return jsonify({
+        'success': False,
+        'error': 500,
+        'message': 'Request Not Successful'
+    }), 500
+
+
+if __name__ == '__main__':
+    app.run()
