@@ -2,6 +2,8 @@ import os
 import openai
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS, cross_origin
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
