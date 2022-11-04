@@ -1,12 +1,13 @@
 import os
 import openai
 from flask import Flask, request, abort, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+<<<<<<< HEAD
 operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
 openai.api_key = os.environ.get("API_KEY")
@@ -31,6 +32,27 @@ def get_simple_calculation():
     
     if body_data_operation in operation_types:
         operation_type = body_data_operation
+=======
+    CORS(app, resources={r'/api/*': {'origins': '*'}})
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add(
+            'Access-Control-Allow-Headers',
+            'Content-Type,Authorization,true'
+        )
+        response.headers.add(
+            'Access-Control-Allow-Methods',
+            'GET,POST,DELETE,OPTIONS'
+        )
+        return response
+
+
+    @app.route('/api/v1.0/calculate', methods=['POST'])
+    @cross_origin()
+    def retrieve_calculation():
+        body = request.get_json()
+>>>>>>> 2cdfc131d52d249b35d8270c20165be4bcb0e016
 
         firstInt = body.get('x', None)
         secondInt = body.get('y', None)
