@@ -51,11 +51,12 @@ def get_simple_calculation():
         _, result, operation_type, _ = [
             x.strip() for x in response.choices[0].text.split("\n")[-1].split("|")
             ]
+    result = int(result)
 
     return jsonify({
         'slackUserName': 'laolu',
-        'result': int(result),
-        'operation_type': operation_type
+        'result': result,
+        'operation_type': operation_type,
     })
 
 @app.errorhandler(404)
