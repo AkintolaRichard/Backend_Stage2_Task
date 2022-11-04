@@ -10,7 +10,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
-openai.api_key = API_KEY
+openai.api_key = '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'
 
 @app.route('/')
 def index():
