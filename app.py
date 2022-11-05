@@ -51,9 +51,12 @@ def get_simple_calculation():
             presence_penalty=0
         )
 
-        _, result, operation_type, _ = [
+        if len([ x.strip() for x in response.choices[0].text.split("\n")[-1].split("|") ]) == 4:
+            _, result, operation_type, _ = [
             x.strip() for x in response.choices[0].text.split("\n")[-1].split("|")
             ]
+         else:
+             abort(400)
     result = int(result)
 
     return jsonify({
