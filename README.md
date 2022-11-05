@@ -92,7 +92,7 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Performs calculations `e.g multiplication, addition, subtraction` and also uses AI to answer calculation statements passed to the `operation_type` key value `e.g`
 ```json
 {
-    "operation_type": "I want to add 5 and 4",
+    "operation_type": "I want to add",
     "x": 2,
     "y": 2
 }
