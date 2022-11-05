@@ -24,6 +24,7 @@ def index():
 @app.route('/api/v1.0/calculate', methods=['POST'])
 def get_simple_calculation():
     body = request.get_json()
+    print(body)
 
     result = None
     operation_type = None
@@ -55,8 +56,8 @@ def get_simple_calculation():
             _, result, operation_type, _ = [
             x.strip() for x in response.choices[0].text.split("\n")[-1].split("|")
             ]
-         else:
-             abort(400)
+        else:
+            abort(400)
     result = int(result)
 
     return jsonify({
