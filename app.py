@@ -24,7 +24,7 @@ def index():
 @app.route('/api/v1.0/calculate', methods=['POST'])
 def get_simple_calculation():
     body = request.get_json()
-    parameter = request.args.get("bonus")
+    
     print(body)
 
     result = None
@@ -33,6 +33,30 @@ def get_simple_calculation():
 
     if body_data_operation != None:
         body_data_operation = body_data_operation.lower()
+    
+    if request.args.get("bonus"):
+        response = openai.Completion.create(
+            model="text-davinci-002",
+            prompt=f"{body_data_operation} \n\n| answer | answer_without_separator | operation_type |",
+            temperature=0,
+            max_tokens=100,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        #print('Response', response.choices[0].text.split("\n")[-1].split("|"))
+
+        _, _, resultWithOutSep, operation_type, _ = [
+            x.strip() for x in response.choices[0].text.split("\n")[-1].split("|")
+            ]
+
+        result = int(resultWithOutSep)
+
+        return jsonify({
+            'slackUsername': 'laolu',
+            'result': result,
+            'operation_type': operation_type,
+        })
     
     if body_data_operation in operation_types:
         operation_type = body_data_operation
