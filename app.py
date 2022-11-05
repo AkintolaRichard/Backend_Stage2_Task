@@ -53,7 +53,7 @@ def get_simple_calculation():
         result = int(resultWithOutSep)
 
         return jsonify({
-            'slackUsername': 'laolu',
+            'slackUsername': 'OlaDev',
             'result': result,
             'operation_type': operation_type,
         })
@@ -88,7 +88,7 @@ def get_simple_calculation():
     result = int(result)
 
     return jsonify({
-        'slackUsername': 'laolu',
+        'slackUsername': 'OlaDev',
         'result': result,
         'operation_type': operation_type,
     })
