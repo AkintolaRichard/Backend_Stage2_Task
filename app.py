@@ -12,7 +12,6 @@ operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
 openai.organization = "org-7A1rvHNcWGQMun2XVbvQxPNH"
 openai.api_key = OPENAI_API_KEY or os.getenv("OPENAI_API_KEY")
-openai.Model.list()
 
 
 @app.route('/')
