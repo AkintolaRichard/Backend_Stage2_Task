@@ -111,6 +111,6 @@ The `--reload` flag will detect file changes and restart the server automaticall
 {
   "operation_type": "addition",
   "result": 4,
-  "slackUserName": "username"
+  "slackUsername": "username"
 }
 ```
