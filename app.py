@@ -24,6 +24,7 @@ def index():
 @app.route('/api/v1.0/calculate', methods=['POST'])
 def get_simple_calculation():
     body = request.get_json()
+    parameter = request.args.get("bonus")
     print(body)
 
     result = None
@@ -63,7 +64,7 @@ def get_simple_calculation():
     result = int(result)
 
     return jsonify({
-        'slackUserName': 'laolu',
+        'slackUsername': 'laolu',
         'result': result,
         'operation_type': operation_type,
     })
