@@ -2,7 +2,7 @@ import os
 import openai
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS, cross_origin
-from settings import API_KEY
+from settings import OPENAI_API_KEY
 
 app = Flask(__name__)
 
@@ -10,8 +10,10 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 operation_types = {"addition": "+", "subtraction": "-", "multiplication": "*"}
 
-openai.api_key = "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"
+openai.organization = "org-7A1rvHNcWGQMun2XVbvQxPNH"
+openai.api_key = OPENAI_API_KEY or os.getenv("OPENAI_API_KEY")
 openai.Model.list()
+
 
 @app.route('/')
 def index():
