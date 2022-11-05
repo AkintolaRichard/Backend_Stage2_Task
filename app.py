@@ -42,9 +42,11 @@ def get_simple_calculation():
             result = eval(f'{firstInt}{operation_types[operation_type]}{secondInt}')
 
     else:
+        firstInt = body.get('x', None)
+        secondInt = body.get('y', None)
         response = openai.Completion.create(
             model="text-davinci-002",
-            prompt=f"{body_data_operation} \n\n| solution | operation_type |",
+            prompt=f"{body_data_operation} {firstInt} and {secondInt} \n\n| solution | operation_type |",
             temperature=0,
             max_tokens=100,
             top_p=1,
